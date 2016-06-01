@@ -15,7 +15,7 @@ class Player(object):
 
 	def reloadImage(self):
 		print "reloading %s" % self.imagePath
-		i = Image.open(self.imagePath)
+		i = Image.open(self.imagePath).convert('RGB')
 		self.image = numpy.asarray(i)
 		print self.image.shape
 
@@ -26,16 +26,15 @@ class Player(object):
 		self.out(frame)
 
 if __name__ == "__main__":
-	filename = "rainbow-test.png"
-	port = serial.Serial('/dev/tty.usbserial-AD01V6V1', baudrate=115200)
-
-	# Allow Arduino to reset.
-	time.sleep(2)
+	filename = "white-150.png"
+	port = serial.Serial('/dev/cu.usbserial-AD01V6V1', baudrate=9600)
 
 	def frameOut(colors):
 		port.write('\x60\x00')
 		for color in colors:
-			port.write(chr(int(color[2])) + chr(int(color[0])) + chr(int(color[1])))
+			#port.write(chr(int(color[2])) + chr(int(color[0])) + chr(int(color[1])))
+			print "%d %d %d" % (int(color[0]), int(color[1]), int(color[2]))
+			port.write(chr(int(color[0])) + chr(int(color[1])) + chr(int(color[2])))
 		port.flush()
 
 	player = Player(filename, frameOut)

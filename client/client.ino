@@ -1,6 +1,6 @@
 #include <Adafruit_NeoPixel.h>
 
-#define LED_COUNT 55 // should equal RGAM_DATA_ROWS
+#define LED_COUNT 150
 #define LED_DATA_PIN 3
 #define LED_DEFAULT_BRIGHTNESS 25
 
@@ -10,7 +10,7 @@
 Adafruit_NeoPixel _pixels = Adafruit_NeoPixel(LED_COUNT, LED_DATA_PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   
   _pixels.begin();
   _pixels.setBrightness(LED_DEFAULT_BRIGHTNESS);
@@ -58,7 +58,7 @@ void readFrame() {
     r = Serial.read();
     g = Serial.read();
     b = Serial.read();
-    _pixels.setPixelColor(x, _pixels.Color(g, r, b));
+    _pixels.setPixelColor(x, r, g, b);
   }
   _pixels.show();
 }
