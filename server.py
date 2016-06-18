@@ -15,7 +15,7 @@ class Player(object):
 
 	def reloadImage(self):
 		print "reloading %s" % self.imagePath
-		i = Image.open(self.imagePath).convert('RGB')
+		i = Image.open(self.imagePath)
 		self.image = numpy.asarray(i)
 		print self.image.shape
 
@@ -26,14 +26,14 @@ class Player(object):
 		self.out(frame)
 
 if __name__ == "__main__":
-	filename = "white-150.png"
+	filename = "red-150.png"
 	port = serial.Serial('/dev/cu.usbserial-AD01V6V1', baudrate=9600)
 
 	def frameOut(colors):
-		port.write('\x60\x00')
+		port.write('0x199') # doesn't work because > 1 byte 
 		for color in colors:
 			#port.write(chr(int(color[2])) + chr(int(color[0])) + chr(int(color[1])))
-			print "%d %d %d" % (int(color[0]), int(color[1]), int(color[2]))
+			#print "%d %d %d" % (int(color[0]), int(color[1]), int(color[2]))
 			port.write(chr(int(color[0])) + chr(int(color[1])) + chr(int(color[2])))
 		port.flush()
 
@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
 	def loop():
 		player.step()
-		reactor.callLater(0.01, loop)
+		reactor.callLater(0.03, loop)
 
 	loop()
 	reactor.run()
