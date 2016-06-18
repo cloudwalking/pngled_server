@@ -40,9 +40,9 @@ class Strip(object):
 	def showFrame(self, colors):
 		i = 0
 		for color in colors:
-			r = int(color[0])
-			g = int(color[1])
-			b = int(color[2])
+			r = int(color[2])
+			g = int(color[0])
+			b = int(color[1])
 			color = Color(r, g, b)
 			self.leds.setPixelColor(i, color)
 			i += 1
@@ -50,7 +50,7 @@ class Strip(object):
 
 
 if __name__ == "__main__":
-	filename = "whisp.png"
+	filename = "bolt.png"
 	strip = Strip(55, 40)
 
 	def frameOut(colors):
