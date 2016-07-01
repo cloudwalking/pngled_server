@@ -1,8 +1,14 @@
 #bin/python
 
+pixel_count = 338 
+file_name = "led-feast-27.png"
+default_brightness = 250
+
 import numpy
+import os
 import serial
 import time
+import sys
 from neopixel import *
 from PIL import Image
 from twisted.internet import reactor
@@ -21,7 +27,7 @@ class Player(object):
 
 	def step(self):
 		now = time.time()
-		frameNum = int ((now * self.fps) % self.image.shape[1])
+		frameNum = int((now * self.fps) % self.image.shape[1])
 		frame = self.image[::-1,frameNum,:]
 		self.out(frame)
 
@@ -40,9 +46,16 @@ class Strip(object):
 	def showFrame(self, colors):
 		i = 0
 		for color in colors:
-			r = int(color[2])
+			# Don't address pixels beyond our strip.
+			if i > self.numPixels:
+				break
+			# Skip every other pixel for power savings.
+			#if i % 2 == 0:
+			#	i += 1
+			#	continue
+			r = int(color[1])
 			g = int(color[0])
-			b = int(color[1])
+			b = int(color[2])
 			color = Color(r, g, b)
 			self.leds.setPixelColor(i, color)
 			i += 1
@@ -50,13 +63,18 @@ class Strip(object):
 
 
 if __name__ == "__main__":
-	filename = "bolt.png"
-	strip = Strip(55, 40)
+	filename = file_name
+	if len(sys.argv) > 1:
+		filename = sys.argv[1]	
+	dir = os.path.dirname(__file__)
+	filepath = os.path.join(dir, filename)
+	
+	strip = Strip(pixel_count, default_brightness)
 
 	def frameOut(colors):
 		strip.showFrame(colors)
 
-	player = Player(filename, frameOut)
+	player = Player(filepath, frameOut)
 
 	def loop():
 		player.step()
@@ -64,4 +82,3 @@ if __name__ == "__main__":
 
 	loop()
 	reactor.run()
-
